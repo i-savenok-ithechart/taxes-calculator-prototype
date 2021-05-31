@@ -1,0 +1,12 @@
+.idea
+__pycache__
+*.env
+*.sqlite3
+.DS_Store
+.pytest_cache
+.gitignored
+
+.coverage
+coverage_html_report
+
+.mypy_cache
