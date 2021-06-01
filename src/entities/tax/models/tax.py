@@ -17,7 +17,7 @@ class Tax:
 
     @property
     def range_lines(self):
-        if not self._range_lines:  # lazy
+        if self._range_lines is None:  # lazy
             taxes_policy = TaxesPolicy.objects.get_for_year(self.year)
             self._range_lines = TaxRangeLinesList(
                 TaxRangeLine(tax_policy_range=policy_range, annual_salary_amount=self.annual_salary_amount)

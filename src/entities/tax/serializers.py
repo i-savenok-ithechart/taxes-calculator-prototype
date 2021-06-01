@@ -1,8 +1,17 @@
 from collections import OrderedDict
 from typing import Dict, Any
 from common import decimal
+from common import serializers
 from common.utils import InfinityLimit
 from entities.tax.models import Tax
+
+
+# noinspection PyAbstractClass
+class TaxInputSerializer(serializers.Serializer):
+    annual_salary_amount = serializers.DecimalField(max_digits=32, decimal_places=16, min_value=0, required=True)
+
+    class Meta:
+        fields = ('annual_salary_amount',)
 
 
 class TaxOutputSerializer:

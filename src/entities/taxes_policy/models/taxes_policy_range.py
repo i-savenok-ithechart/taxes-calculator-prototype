@@ -46,7 +46,12 @@ class TaxesPolicyRange(models.Model):
 
     amount_from: Decimal = models.DecimalField(default=0, decimal_places=4, max_digits=20)
 
-    _amount_to: Optional[Decimal] = models.DecimalField(decimal_places=4, max_digits=20, null=True)
+    _amount_to: Optional[Decimal] = models.DecimalField(
+        decimal_places=4,
+        max_digits=20,
+        null=True,
+        verbose_name='Amount to'
+    )
     """
         If amount_to value is null - it means that range includes all from "amount_from" to infinity.
     """

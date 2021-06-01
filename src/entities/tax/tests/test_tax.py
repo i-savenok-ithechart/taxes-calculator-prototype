@@ -8,7 +8,7 @@ from common.decimal import Decimal
 from entities.tax.models import Tax
 from entities.tax.models.tax import TaxRangeLine, TaxRangeLinesList
 from entities.taxes_policy.models import TaxesPolicyRange
-from entities.taxes_policy.serializers import TaxOutputSerializer
+from entities.tax.serializers import TaxOutputSerializer
 
 
 @pytest.mark.django_db
