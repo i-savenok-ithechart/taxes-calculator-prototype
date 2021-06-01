@@ -37,11 +37,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '6ai464wt+6wx*9hhe+=6&!ux#f8d^^we)gnrr6*%ixo0@#soei'
 
 
-DEBUG_MODE_ENV = os.getenv('DEBUG_MODE')
-if DEBUG_MODE_ENV == 'false':
-    DEBUG = False
-else:
-    DEBUG = True
+DEBUG = os.getenv('DEBUG_MODE')
 TEST_MODE = os.getenv('TEST_MODE', False)
 
 ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', None)
@@ -49,6 +45,7 @@ if ALLOWED_HOSTS_ENV:
     ALLOWED_HOSTS: List[str] = json.loads(ALLOWED_HOSTS_ENV)
 else:
     ALLOWED_HOSTS = [
+        "localhost",
         "127.0.0.1",
         "0.0.0.0",
     ]
