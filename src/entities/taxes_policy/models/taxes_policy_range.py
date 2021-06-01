@@ -1,12 +1,10 @@
-from typing import Optional, Iterable, TYPE_CHECKING, Tuple, Collection
+from typing import Optional, TYPE_CHECKING, Tuple, Any, Union
 
 from common.exceptions import ValidationError
 
-if TYPE_CHECKING:
-    from .taxes_policy import TaxesPolicy
-
 from common import models
 from common.decimal import Decimal
+from common.utils import InfinityLimit
 from common.validators import MaxValueValidator
 
 
@@ -26,13 +24,39 @@ class TaxesPolicyRangeQuerySet(models.QuerySet):
 
 
 class TaxesPolicyRangeManager(models.Manager):
-    pass
+
+    def create(
+        self,
+        *args: Any,
+        amount_from: Union[Decimal, int, str] = 0,
+        amount_to: Union[Decimal, int, str],
+        percent: int = 0,
+        **kwargs: Any,
+    ) -> 'TaxesPolicyRange':
+        return super(TaxesPolicyRangeManager, self).create(
+            *args,
+            amount_from=amount_from,
+            amount_to=amount_to,
+            percent=percent,
+            **kwargs,
+        )
 
 
 class TaxesPolicyRange(models.Model):
 
     amount_from: Decimal = models.DecimalField(default=0, decimal_places=4, max_digits=20)
-    amount_to: Optional[Decimal] = models.DecimalField(decimal_places=4, max_digits=20)
+
+    _amount_to: Optional[Decimal] = models.DecimalField(decimal_places=4, max_digits=20, null=True)
+    """
+        If amount_to value is null - it means that range includes all from "amount_from" to infinity.
+    """
+    @property
+    def amount_to(self) -> Union[Decimal, InfinityLimit]: return self._amount_to or InfinityLimit()
+
+    @amount_to.setter
+    def amount_to(self, value: Union[Decimal, None, InfinityLimit]):
+        self._amount_to = (value if not isinstance(value, InfinityLimit) else None)
+
     percent: int = models.PositiveIntegerField(validators=[MaxValueValidator(limit_value=100)], default=0)
 
     taxes_policies: models.Manager

@@ -8,3 +8,11 @@ def get_connection_queries():
     settings.DEBUG = True
     from django.db import connection
     return connection.queries
+
+
+class InfinityLimit:
+    def __le__(self, other): return True if isinstance(other, InfinityLimit) else False
+    def __lt__(self, other): return False
+    def __ge__(self, other): return True
+    def __gt__(self, other): return False if isinstance(other, InfinityLimit) else True
+    def __eq__(self, other): return True if isinstance(other, InfinityLimit) else False
