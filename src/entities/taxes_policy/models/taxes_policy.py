@@ -25,7 +25,7 @@ class TaxesPolicyManager(models.Manager):
         # todo describe that stuff
         """
 
-        instance = self.prefetch_related('ranges').filter(year__lte=year).order_by('+year').first()
+        instance = self.prefetch_related('ranges').filter(year__lte=year).order_by('-year').first()
         if not instance:
             instance = self.create_defaults()
 

@@ -82,6 +82,17 @@ class TestTaxesPolicy:
         assert not TaxesPolicy.objects.first()
         assert policy_range.taxes_policies.count() == 0
 
+    def test_find_for_year(self, taxes_policy_factory):
+        assert TaxesPolicy.objects.count() == 0
+        default = TaxesPolicy.objects.get_for_year(2000)
+        assert default.year == 0
+
+        taxes_policy_factory(year=2021), taxes_policy_factory(year=2020), taxes_policy_factory(year=2015),
+        policy = taxes_policy_factory(2000)
+        assert TaxesPolicy.objects.get_for_year(2000) == policy
+        assert TaxesPolicy.objects.get_for_year(2014) == policy
+        assert TaxesPolicy.objects.get_for_year(1999) == default
+
 
 @pytest.mark.django_db
 class TestTaxesPolicyRange:
@@ -148,3 +159,29 @@ class TestTaxesPolicyRange:
             range_1 = TaxesPolicyRange.objects.create(amount_from=values_for_range_1[0], amount_to=values_for_range_1[1])  # noqa
             range_2 = TaxesPolicyRange.objects.create(amount_from=values_for_range_2[0], amount_to=values_for_range_2[1])  # noqa
             assert range_1.is_overlapping_with(range_2)
+
+    def test_find_overlapping_in_qs(self, taxes_policy_factory):
+        instances = TaxesPolicyRange.objects.bulk_create([
+            TaxesPolicyRange(amount_from=0, amount_to=10),
+            TaxesPolicyRange(amount_from=11, amount_to=25),   # overlaps
+            TaxesPolicyRange(amount_from=26, amount_to=30),
+            TaxesPolicyRange(amount_from=11, amount_to=15),  # with that one
+            TaxesPolicyRange(amount_from=16, amount_to=20),  # and that one
+        ])
+        policy = taxes_policy_factory()
+        policy.ranges.set(instances)
+
+        first, second = policy.ranges.find_first_overlapping_pair()
+        assert first == instances[1]
+        assert second == instances[3]
+
+    def test_try_to_find_overlapping_when_there_are_no_overlapping(self, taxes_policy_factory):
+        instances = TaxesPolicyRange.objects.bulk_create([
+            TaxesPolicyRange(amount_from=0, amount_to=10),
+            TaxesPolicyRange(amount_from=26, amount_to=30),
+        ])
+        policy = taxes_policy_factory()
+        policy.ranges.set(instances)
+
+        result = policy.ranges.find_first_overlapping_pair()
+        assert result is None
