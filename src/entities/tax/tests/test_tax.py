@@ -1,3 +1,6 @@
+import json
+from collections import OrderedDict
+
 import pytest
 
 from common.datetime import get_current_year
@@ -5,6 +8,7 @@ from common.decimal import Decimal
 from entities.tax.models import Tax
 from entities.tax.models.tax import TaxRangeLine, TaxRangeLinesList
 from entities.taxes_policy.models import TaxesPolicyRange
+from entities.taxes_policy.serializers import TaxOutputSerializer
 
 
 @pytest.mark.django_db
@@ -80,3 +84,57 @@ class TestTax:
         assert tax.range_lines[0].amount == 0
         assert round(tax.range_lines[1].amount, 2) == Decimal('7.5')
         assert round(tax.range_lines[2].amount, 2) == Decimal('0.80')
+
+    def test_output_serializer(self, taxes_policy_factory):
+        ranges = TaxesPolicyRange.objects.bulk_create([
+            TaxesPolicyRange(amount_from=0, amount_to=12.500, percent=0),
+            TaxesPolicyRange(amount_from=12.501, amount_to=50.000, percent=20),
+            TaxesPolicyRange(amount_from=50.001, amount_to=150.000, percent=40),
+            TaxesPolicyRange(amount_from=150.000, amount_to=None, percent=45),
+        ])
+        policy = taxes_policy_factory(year=2000)
+        policy.ranges.set(ranges)
+
+        annual_salary_amount = 52.000
+        tax = Tax(annual_salary_amount=annual_salary_amount, year=policy.year)
+        serializer = TaxOutputSerializer(tax=tax)
+        assert serializer.data == OrderedDict(
+            annual_salary_amount="52.0000",
+            year=str(policy.year),
+            total_tax_amount="8.2994",
+        )
+        assert json.dumps(serializer.data)
+
+        serializer = TaxOutputSerializer(tax=tax, detailed=True)
+        assert serializer.data == OrderedDict([
+            ('annual_salary_amount', '52.0000'),
+            ('year', '2000'),
+            ('total_tax_amount', '8.2994'),
+            ('details', [
+                OrderedDict([
+                    ('amount_from', '0.0000'),
+                    ('amount_to', '12.5000'),
+                    ('percent', '0'),
+                    ('tax_amount', '0.0000')
+                ]),
+                OrderedDict([
+                    ('amount_from', '12.5010'),
+                    ('amount_to', '50.0000'),
+                    ('percent', '20'),
+                    ('tax_amount', '7.4998')
+                ]),
+                OrderedDict([
+                    ('amount_from', '50.0010'),
+                    ('amount_to', '150.0000'),
+                    ('percent', '40'),
+                    ('tax_amount', '0.7996')
+                ]),
+                OrderedDict([
+                    ('amount_from', '150.0000'),
+                    ('amount_to', '*'),
+                    ('percent', '45'),
+                    ('tax_amount', '0.0000')
+                ])
+            ])
+        ])
+        assert json.dumps(serializer.data)
