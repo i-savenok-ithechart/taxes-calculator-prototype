@@ -4,6 +4,7 @@ if TYPE_CHECKING:
 
 from common import models
 from common.decimal import Decimal
+from common.exceptions import ValidationError
 from common.validators import MaxValueValidator
 
 
@@ -23,6 +24,16 @@ class TaxesPolicyRange(models.Model):
 
     def __str__(self):
         return f'{self.percent}% between {self.amount_from} up to {self.amount_to or "the end"}.'
+
+    def clean(self) -> None:
+        overlapping_in_year = self._search_for_overlapping_in_the_year()
+        if overlapping_in_year:
+            raise ValidationError(f'The range is overlapping with already existing {overlapping_in_year}')
+        return super(TaxesPolicyRange, self).clean()
+
+    def _search_for_overlapping_in_the_year(self) -> Optional['TaxesPolicyRange']:
+        # todo
+        ...
 
     class Meta:
         db_table = 'taxes_policy_range'
