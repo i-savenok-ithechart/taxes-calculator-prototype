@@ -1,2 +1,2 @@
-from .taxes_policy import TaxesPolicy
-from .taxes_policy_range import TaxesPolicyRange
+from .taxes_policy import TaxesPolicy  # noqa
+from .taxes_policy_range import TaxesPolicyRange  # noqa

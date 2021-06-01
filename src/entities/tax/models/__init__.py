@@ -1,1 +1,1 @@
-from .tax import Tax
+from .tax import Tax  # noqa
