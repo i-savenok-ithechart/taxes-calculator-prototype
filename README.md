@@ -10,3 +10,9 @@ Build and run:
 
 App should be running on <b>localhost:8000</b>. Check the status with:
 >curl --location --request GET 'http://localhost:8008/health/'
+
+>curl --location --request PUT 'http://localhost:8008/api/v1/taxes/?detailed=true&year=2022' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "annual_salary_amount": "500"
+}'

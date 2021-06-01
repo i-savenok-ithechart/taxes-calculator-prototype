@@ -16,3 +16,4 @@ class InfinityLimit:
     def __ge__(self, other): return True
     def __gt__(self, other): return False if isinstance(other, InfinityLimit) else True
     def __eq__(self, other): return True if isinstance(other, InfinityLimit) else False
+    def __str__(self): return "∞"
