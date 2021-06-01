@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, List, Tuple
 
 import pytest
 
@@ -26,4 +26,18 @@ def taxes_policy_range_factory(fake) -> Callable:
         if percent is None:
             percent = fake.pyint(0, 100)
         return TaxesPolicyRange.objects.create(amount_from=amount_from, amount_to=amount_to, percent=percent)
+    return create
+
+
+@pytest.fixture
+def taxes_policy_with_ranges_factory():
+    def create(year: Optional[int], ranges_values: List[Tuple[Decimal, Decimal, int]]) -> TaxesPolicy:
+        # ranges_values: a list of tuples with amount_from, amount_to, percent
+
+        policy = TaxesPolicy.objects.create(year=year)
+        ranges = TaxesPolicyRange.objects.bulk_create([
+            TaxesPolicyRange(amount_from=values[0], amount_to=values[1], percent=values[2]) for values in ranges_values
+        ])
+        policy.ranges.set(ranges)
+        return policy
     return create

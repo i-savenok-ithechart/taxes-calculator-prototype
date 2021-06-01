@@ -19,7 +19,7 @@ class TaxView(APIView):
         tax = Tax(annual_salary_amount=annual_salary_amount, year=year)
 
         detailed = self._get_detailed_param(request)
-        return Response(data=TaxOutputSerializer(tax=tax, detailed=detailed))
+        return Response(data=TaxOutputSerializer(tax=tax, detailed=detailed).data)
 
     @classmethod
     def _get_year_param(cls, request: Request) -> Optional[int]:
