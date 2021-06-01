@@ -12,7 +12,7 @@ class TaxesPolicy(models.Model):
     year: Optional[int] = models.PositiveIntegerField(unique=True, null=False, blank=False)
     ranges = models.ManyToManyField('taxes_policy.TaxesPolicyRange', related_name='taxes_policies')
 
-    objects = TaxesPolicyManager()
+    objects: TaxesPolicyManager = TaxesPolicyManager()
 
     class Meta:
         db_table = 'taxes_policy'
