@@ -37,7 +37,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '6ai464wt+6wx*9hhe+=6&!ux#f8d^^we)gnrr6*%ixo0@#soei'
 
 
-DEBUG = os.getenv('DEBUG_MODE', True)  # todo rm
+DEBUG = os.getenv('DEBUG_MODE', False)
 TEST_MODE = os.getenv('TEST_MODE', False)
 
 ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', None)

@@ -110,7 +110,7 @@ class Model(_models.Model):
         using: Optional[str] = None,
         update_fields: Optional[Union[Sequence[str], str]] = None
     ):
-
+        self.clean()
         is_first_save = self.created_at is None
 
         super().save(force_insert, force_update, using, update_fields)
@@ -158,4 +158,8 @@ class DecimalField(_models.DecimalField):
 
 
 class Manager(_models.Manager):
+    pass
+
+
+class QuerySet(_models.QuerySet):
     pass

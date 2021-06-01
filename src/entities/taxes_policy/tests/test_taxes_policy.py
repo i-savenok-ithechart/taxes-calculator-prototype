@@ -1,6 +1,6 @@
 import pytest
-from entities.taxes_policy.models import TaxesPolicy
-from common.exceptions import IntegrityError
+from entities.taxes_policy.models import TaxesPolicy, TaxesPolicyRange
+from common.exceptions import IntegrityError, ValidationError
 
 
 @pytest.mark.django_db
@@ -79,3 +79,55 @@ class TestTaxesPolicy:
         policy.delete()
         assert not TaxesPolicy.objects.first()
         assert policy_range.taxes_policies.count() == 0
+
+
+@pytest.mark.django_db
+class TestTaxesPolicyRange:
+
+    def test_create(self):
+        policy_range: TaxesPolicyRange = TaxesPolicyRange.objects.create(amount_to=100)
+        assert policy_range.amount_to == 100
+        assert policy_range.amount_from == 0
+        assert policy_range.percent == 0
+        assert policy_range.taxes_policies.count() == 0
+
+        amount_to, amount_from, percent = 100, 80, 25
+        policy_range: TaxesPolicyRange = TaxesPolicyRange.objects.create(
+            amount_to=100, amount_from=amount_from, percent=percent
+        )
+        assert policy_range.amount_to == amount_to
+        assert policy_range.amount_from == amount_from
+        assert policy_range.percent == percent
+        assert policy_range.taxes_policies.count() == 0
+
+    def test_try_to_create_with_amount_to_less_then_amount_from(self, taxes_policy_range_factory):
+        with pytest.raises(ValidationError):
+            taxes_policy_range_factory(amount_to=100, amount_from=200)
+
+    def test_create_with_invalid_percent(self, taxes_policy_range_factory):
+        taxes_policy_range_factory(percent=0)
+        taxes_policy_range_factory(percent=100)
+        with pytest.raises(IntegrityError):
+            taxes_policy_range_factory(percent=-1)
+            taxes_policy_range_factory(percent=101)
+
+    def test_is_overlapping_with(self, taxes_policy_range_factory):
+        not_overlapping_amount_values = [
+            ((0, 5), (6, 10)),
+            ((5, 15), (60, 250)),
+        ]
+        overlapping_amount_values = [
+            ((0, 5), (5, 10)),
+            ((5, 15), (15, 100)),
+            ((0, 50), (5, 10)),
+            ((5, 10), (0, 50)),
+        ]
+        for values_for_range_1, values_for_range_2 in not_overlapping_amount_values:
+            range_1 = taxes_policy_range_factory(amount_from=values_for_range_1[0], amount_to=values_for_range_1[1])
+            range_2 = taxes_policy_range_factory(amount_from=values_for_range_2[0], amount_to=values_for_range_2[1])
+            assert not range_1.is_overlapping_with(range_2)
+
+        for values_for_range_1, values_for_range_2 in overlapping_amount_values:
+            range_1 = taxes_policy_range_factory(amount_from=values_for_range_1[0], amount_to=values_for_range_1[1])
+            range_2 = taxes_policy_range_factory(amount_from=values_for_range_2[0], amount_to=values_for_range_2[1])
+            assert range_1.is_overlapping_with(range_2)
