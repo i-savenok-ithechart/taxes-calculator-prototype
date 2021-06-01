@@ -7,8 +7,8 @@ from common.datetime import get_current_year
 from common.decimal import Decimal
 from entities.tax.models import Tax
 from entities.tax.models.tax import TaxRangeLine, TaxRangeLinesList
-from entities.taxes_policy.models import TaxesPolicyRange
 from entities.tax.serializers import TaxOutputSerializer
+from entities.taxes_policy.models import TaxesPolicyRange
 
 
 @pytest.mark.django_db

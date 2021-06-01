@@ -1,8 +1,8 @@
 import pytest
 
+from common.exceptions import IntegrityError, ValidationError
 from common.utils import InfinityLimit
 from entities.taxes_policy.models import TaxesPolicy, TaxesPolicyRange
-from common.exceptions import IntegrityError, ValidationError
 
 
 @pytest.mark.django_db

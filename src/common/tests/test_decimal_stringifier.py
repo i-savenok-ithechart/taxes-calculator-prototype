@@ -1,4 +1,4 @@
-from common.decimal import to_string, Decimal
+from common.decimal import Decimal, to_string
 
 
 def test_stringify():

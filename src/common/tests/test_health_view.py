@@ -1,4 +1,5 @@
 import pytest
+
 from common.http import status
 
 PATH = '/health/'

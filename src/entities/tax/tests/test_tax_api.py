@@ -1,8 +1,8 @@
 import pytest
 
+from common.datetime import get_current_year
 from common.decimal import Decimal
 from common.http import status
-from common.datetime import get_current_year
 from project.settings import API_URL_PREFIX
 
 PATH = f'/{API_URL_PREFIX}taxes/'

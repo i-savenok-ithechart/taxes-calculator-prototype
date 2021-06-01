@@ -3,8 +3,8 @@ from typing import Optional
 from common.exceptions import DRFValidationError
 from common.http import Request, Response
 from common.views import APIView
-from entities.tax.serializers import TaxInputSerializer, TaxOutputSerializer
 from entities.tax.models import Tax
+from entities.tax.serializers import TaxInputSerializer, TaxOutputSerializer
 
 
 class TaxView(APIView):

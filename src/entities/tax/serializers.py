@@ -1,7 +1,7 @@
 from collections import OrderedDict
-from typing import Dict, Any
-from common import decimal
-from common import serializers
+from typing import Any, Dict
+
+from common import decimal, serializers
 from common.utils import InfinityLimit
 from entities.tax.models import Tax
 

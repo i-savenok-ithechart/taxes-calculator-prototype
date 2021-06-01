@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Any, Optional
 
 from common import models
 from entities.taxes_policy.models.taxes_policy_range import TaxesPolicyRange
