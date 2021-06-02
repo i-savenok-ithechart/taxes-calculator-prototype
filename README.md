@@ -30,7 +30,7 @@ isort and flake8 or maybe debug something:
    >alter role db_user with createdb;<br />
    >create database taxes_calculator_db with owner db_user;<br />
    >\q<br />
-5. Apply migrations:
+5. Apply migrations from "/src":
    >python manage.py migrate
 6. If you want to run app in Pycharm - mark "/src" directory as "sources root".
    ![gif](docs/img-8.gif)
@@ -41,7 +41,7 @@ isort and flake8 or maybe debug something:
     >pytest
 10. Run isort from "/src" with
     >isort .
-11. Rгn flake8 from "/src" with
+11. Run flake8 from "/src" with
     >flake8 .
 
 
