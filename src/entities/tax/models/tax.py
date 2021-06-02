@@ -2,7 +2,6 @@ from typing import Iterator
 
 from common.datetime import get_current_year
 from common.decimal import Decimal
-from common.utils import InfinityLimit
 from entities.taxes_policy.models import TaxesPolicy, TaxesPolicyRange
 
 
