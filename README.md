@@ -36,6 +36,12 @@ isort and flake8 or maybe debug something:
 7. Set DEBUG_MODE=true in local environment.
 8. Run app from "/src" with
    >python manage.py runserver
+9. Run tests from "/src" with
+    >pytest
+10. Run isort from "/src" with
+    >isort .
+11. RUn flake8 from "/src" with
+    >flake8 .
 
 
 ## How to edit tax band data:
