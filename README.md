@@ -8,7 +8,7 @@ Create pg volume with:
 Build and run:
 >sudo docker-compose up
 
-App should be running on <b>localhost:8000</b>. Check the status with:
+App should be running on <b>localhost:8008</b>. Check the status with:
 >curl --location --request GET 'http://localhost:8008/health/'
 
 ### 2. Without docker-compose:
@@ -40,7 +40,7 @@ isort and flake8 or maybe debug something:
     >pytest
 10. Run isort from "/src" with
     >isort .
-11. RUn flake8 from "/src" with
+11. Rгn flake8 from "/src" with
     >flake8 .
 
 
