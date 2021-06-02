@@ -33,6 +33,7 @@ isort and flake8 or maybe debug something:
 5. Apply migrations:
    >python manage.py migrate
 6. If you want to run app in Pycharm - mark "/src" directory as "sources root".
+   ![gif](docs/img-8.gif)
 7. Set DEBUG_MODE=true in local environment.
 8. Run app from "/src" with
    >python manage.py runserver
