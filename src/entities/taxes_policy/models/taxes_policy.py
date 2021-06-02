@@ -22,7 +22,11 @@ class TaxesPolicyManager(models.Manager):
 
     def get_for_year(self, year: int) -> 'TaxesPolicy':
         """
-        # todo describe that stuff
+            If there is no taxes policy for lookup year,
+        taxes policy  for closest previous year  will be
+        returned.  If there is no any taxes policies for
+        previous years - defaults will be created (for 0
+        year).
         """
 
         instance = self.prefetch_related('ranges').filter(year__lte=year).order_by('-year').first()
@@ -33,9 +37,13 @@ class TaxesPolicyManager(models.Manager):
 
 
 class TaxesPolicy(models.Model):
+    """
+        TaxesPolicy is the entity that brings together a
+    set of TaxesPolicyRanges for a special year.
+    """
 
     year: Optional[int] = models.PositiveIntegerField(unique=True, null=False, blank=False)
-    ranges = models.ManyToManyField('taxes_policy.TaxesPolicyRange', related_name='taxes_policies')
+    ranges: models.Manager = models.ManyToManyField('taxes_policy.TaxesPolicyRange', related_name='taxes_policies')
 
     objects: TaxesPolicyManager = TaxesPolicyManager()
 

@@ -42,9 +42,15 @@ class TaxesPolicyRangeManager(models.Manager):
 
 
 class TaxesPolicyRange(models.Model):
+    """
+        TaxesPolicyRange contains parameters by which tax
+    is  calculated for  a certain range  of annual salary
+    amount.
+    """
 
+    taxes_policies: models.Manager
+    percent: int = models.PositiveIntegerField(validators=[MaxValueValidator(limit_value=100)], default=0)
     amount_from: Decimal = models.DecimalField(default=0, decimal_places=4, max_digits=20)
-
     _amount_to: Optional[Decimal] = models.DecimalField(
         decimal_places=4,
         max_digits=20,
@@ -52,7 +58,7 @@ class TaxesPolicyRange(models.Model):
         verbose_name='Amount to'
     )
     """
-        If amount_to value is null - it means that range includes all from "amount_from" to infinity.
+        If _amount_to value is null - it means that range includes all from "amount_from" to infinity.
     """
     @property
     def amount_to(self) -> Union[Decimal, InfinityLimit]: return self._amount_to or InfinityLimit()
@@ -60,10 +66,6 @@ class TaxesPolicyRange(models.Model):
     @amount_to.setter
     def amount_to(self, value: Union[Decimal, None, InfinityLimit]):
         self._amount_to = (value if not isinstance(value, InfinityLimit) else None)
-
-    percent: int = models.PositiveIntegerField(validators=[MaxValueValidator(limit_value=100)], default=0)
-
-    taxes_policies: models.Manager
 
     objects: TaxesPolicyRangeManager = TaxesPolicyRangeManager.from_queryset(TaxesPolicyRangeQuerySet)()
 

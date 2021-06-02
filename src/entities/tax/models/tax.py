@@ -6,7 +6,7 @@ from common.utils import InfinityLimit
 from entities.taxes_policy.models import TaxesPolicy, TaxesPolicyRange
 
 
-class Tax:
+class Tax:  # Full tax from annual salary including all tax policy range lines for selected year.
     annual_salary_amount: Decimal
     year: int
     _range_lines: 'TaxRangeLinesList[TaxRangeLine]' = None
@@ -26,7 +26,7 @@ class Tax:
         return self._range_lines
 
 
-class TaxRangeLine:
+class TaxRangeLine:  # Tax from annual salary for a special taxes policy range line.
     policy_range: TaxesPolicyRange
     amount: Decimal
 
