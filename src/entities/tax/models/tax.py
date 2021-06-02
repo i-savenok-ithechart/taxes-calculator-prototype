@@ -41,10 +41,7 @@ class TaxRangeLine:  # Tax from annual salary for a special taxes policy range l
             if annual_salary_amount <= self.policy_range.amount_to:
                 amount_before_range_ends = annual_salary_amount
             else:
-                if isinstance(self.policy_range.amount_to, InfinityLimit):
-                    amount_before_range_ends = annual_salary_amount
-                else:
-                    amount_before_range_ends = self.policy_range.amount_to
+                amount_before_range_ends = self.policy_range.amount_to
 
             amount_in_range = amount_before_range_ends - self.policy_range.amount_from
             calculated_amount = amount_in_range / 100 * self.policy_range.percent
